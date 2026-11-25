@@ -26,14 +26,16 @@ def main() -> None:
         raise SystemExit(f"monologue is {len(words)} words, expected ~100")
     if not 1 <= len(MONOLOGUE) <= 600:
         raise SystemExit(f"monologue is {len(MONOLOGUE)} chars, expected 1-600")
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
+    output_dir = os.environ.get("OUTPUT_DIR", "/output")
+    os.makedirs(output_dir, exist_ok=True)
+    path = os.path.join(output_dir, "entry.txt")
+    with open(path, "w", encoding="utf-8", newline="") as f:
         f.write(MONOLOGUE)
-    os.chmod("/output/entry.txt", 0o644)
-    with open("/output/entry.txt", encoding="utf-8", newline="") as f:
+    os.chmod(path, 0o644)
+    with open(path, encoding="utf-8", newline="") as f:
         if f.read() != MONOLOGUE:
-            raise SystemExit("round-trip check failed: /output/entry.txt differs")
-    print(f"wrote /output/entry.txt: {len(words)} words, "
+            raise SystemExit(f"round-trip check failed: {path} differs")
+    print(f"wrote {path}: {len(words)} words, "
           f"{len(MONOLOGUE)} chars")
 
 
